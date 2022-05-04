@@ -7,7 +7,7 @@ from datetime import date
 import requests
 
 
-communications = { 'MM': { '11': 'Brothers' ,'01': 'Father and Son' ,'02':'Grandfather and Grandson' ,'22': 'Cousins','33': 'Troyrod brothers', '10': 'Son and Father' ,'20':'Grandson and Grandfather' ,'23': 'Uncle and Cousin nephew','32': 'Cousin nephew and Uncle','60':'Relatives','54': 'Cousins 4th','55':'Relatives'} ,'MF':{'11':'Brother and Sister' ,'01': 'Father and Dauther','21': '21','22': 'Cousins','31': '31','41': '41','54': 'Cousins 4th','10': 'Son and Mother','14': '14','13': '13','24': '24','60':'Relatives','55':'Relatives'}, 'FM':{'11': 'Sister and Brother' ,'12': 'Aunt and Nephew','14': '14','13': '13','24': '24','21': '21','30': '30','40': '40','54': 'Cousins 4th', '10': 'Dauther and Father','22': 'Cousins','03': '03','04': '04','60':'Relatives','55':'Relatives'} ,'FF':{'11':'Sisters' ,'01': 'Mother adn Dauther','14': '14','13': '13','54': 'Cousins 4th','20':'Grandmother and Granddauther' ,'24': '24','30': 'Granddauther and Grand-grandMother', '40': 'Relatives', '10': 'Dauther and Mother' ,'33': 'Troyrod sisters','02': 'Granddauther and Grandmother','03': 'Grand-grandMother and Granddauther','04': 'Relatives','60':'Relatives','55':'Relatives'}}
+communications = { 'MM': { '11': 'Brothers' ,'01': 'Father and Son' ,'02':'Grandfather and Grandson' ,'22': 'Cousins','33': 'Troyrod brothers', '10': 'Son and Father' ,'20':'Grandson and Grandfather' ,'23': 'Uncle and Cousin nephew','32': 'Cousin nephew and Uncle','60':'Relatives','54': 'Cousins 4th','55':'Relatives', '-2-3': 'Relatives'} ,'MF':{'11':'Brother and Sister' ,'01': 'Father and Dauther','21': '21','22': 'Cousins','31': '31','41': '41','54': 'Cousins 4th','10': 'Son and Mother','14': '14','13': '13','24': '24','60':'Relatives','55':'Relatives'}, 'FM':{'11': 'Sister and Brother' ,'12': 'Aunt and Nephew','14': '14','13': '13','24': '24','21': '21','30': '30','40': '40','54': 'Cousins 4th', '10': 'Dauther and Father','22': 'Cousins','03': '03','04': '04','60':'Relatives','55':'Relatives'} ,'FF':{'11':'Sisters' ,'01': 'Mother adn Dauther','14': '14','13': '13','54': 'Cousins 4th','20':'Grandmother and Granddauther' ,'24': '24','30': 'Granddauther and Grand-grandMother', '40': 'Relatives', '10': 'Dauther and Mother' ,'33': 'Troyrod sisters','02': 'Granddauther and Grandmother','03': 'Grand-grandMother and Granddauther','04': 'Relatives','60':'Relatives','55':'Relatives'}}
 
 
 class Relative:
@@ -72,19 +72,20 @@ def create_ties(id: str):
             current_level += 1
         # print(current_level)
     _down = True
-    while _down:
-        current_level = -1
+    current_level = -1
+    while _down:        
         level_relatives_list = []
         for code_relatives in ties_relatives[current_level+1]:
+            # print(code_relatives)
             for id_relatives in dict_relatives.keys():
-                if dict_relatives[id_relatives].codeDad == code_relatives and dict_relatives[id_relatives].codeDad != '':
+                if dict_relatives[id_relatives].codeDad == code_relatives or dict_relatives[id_relatives].codeMam == code_relatives:
                     level_relatives_list.append(id_relatives)
-                if dict_relatives[id_relatives].codeMam == code_relatives and dict_relatives[id_relatives].codeMam != '':
-                    level_relatives_list.append(id_relatives)
+                    # print(level_relatives_list)
         if level_relatives_list == []:
             _down = False
         else:
             ties_relatives[current_level] = level_relatives_list
+            # print(level_relatives_list)
             current_level -= 1
     return ties_relatives
 
@@ -113,8 +114,6 @@ def read_person():
 # Запись из файла
     dict_relatives = {}
     response = requests.get('http://myfamilytree.live/dataOfPersons.js')
-    # with open(FILE_PATH_PERSONS) as p:
-        # reader_csv = csv.reader(p) 
     reader_list = response.text.split('\r\n')
     reader_list.pop() #убирает последнюю строчку в файле
     # print(reader_list)
@@ -173,18 +172,25 @@ def compare_persons(person_1: str, person_2: str):
                     print(dict_relatives[person_1])
                     print(dict_relatives[person_2])
                     print(tie)
-                    return f'Common asncestor  \n{dict_relatives[value]} \n Related communication {communications[tie[3]][str(key_1) + str(key_2)]}'                
+                    return f'Common asncestor  \n{dict_relatives[value]} \n Related communication is founded' 
+                    # {communications[tie[3]][str(key_1) + str(key_2)]}               
     return print('Don\'t have ties')
 
 
 if __name__  == '__main__':
 
     dict_relatives = read_person()
-    print(create_ties('1'))
-   
-    # print(dict_relatives['1'])
-    # print(dict_relatives['16'].print_full_info())
-    # find_name('Vaysberg')
-    # print(compare_persons('16','17'))
+    w ='yes'
+    while w != 'n':
 
-   
+        # print(dict_relatives)
+        # print(create_ties('55'))
+    
+        # print(dict_relatives['7'])
+        # print(dict_relatives['16'].print_full_info())
+        # find_name('Gordon')
+        # print(compare_persons('108','42'))
+        person_1 = input('Person №1:')
+        person_2 = input('Person №2:')
+        print(compare_persons(person_1, person_2))
+        w = input('Again?:')
