@@ -197,5 +197,7 @@ if __name__  == '__main__':
         if answer == 'Don\'t have ties':
             print(answer)
         else:
-            webbrowser.open_new_tab(f'http://myfamilytree.live/?{answer[2]}')
+            url = f'http://myfamilytree.live/?{answer[2]}Ber{person_1}To{person_2}'
+            # webbrowser.open_new_tab(url)
+            print(url)
         w = input('Again?:')
