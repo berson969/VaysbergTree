@@ -46,13 +46,12 @@ def create_ties(id: str):
         if level_relatives_list == []:
             _down = False
         else:
-            ties_relatives[current_level] = level_relatives_list)
+            ties_relatives[current_level] = level_relatives_list
             current_level -= 1
     return ties_relatives
 
 def clean_values(value,clear_string: str):
     new_value = value.lstrip(clear_string)
-    # print(new_value)
     if new_value == "":
         new_value = None
     new_value = new_value.strip('"')
@@ -79,6 +78,7 @@ def read_person():
         codeDad_person = clean_values(reader_list[i+11],'pers[a].codeDad = ')
         codeMam_person = clean_values(reader_list[i+12],'pers[a].codeMam = ')
         data_person = Relative(name_person, lastname_person, gender_person, date_birth, date_dead, codeDad_person, codeMam_person)
+        dict_relatives[id_person] = data_person
     return dict_relatives
 
 def compare_persons(person_1: str, person_2: str):
@@ -87,9 +87,6 @@ def compare_persons(person_1: str, person_2: str):
             for value in value_2:
                 if value in value_1:
                     tie = [key_1, key_2, value, dict_relatives[person_1].gender + dict_relatives[person_2].gender]
-                    print(dict_relatives[person_1])
-                    print(dict_relatives[person_2])
-                    print(tie)
                     return tie        
     return 'Don\'t have ties'
 
